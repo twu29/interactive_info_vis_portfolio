@@ -1,12 +1,12 @@
 // Instance-mode sketch for tab 3
 registerSketch('sk3', function (p) {
-  let blindHeight = 200; // Start with blind fully down
-  let targetHeight = 200; // Start closed
-  let isPulled = true; // Start in pulled state
+  let blindHeight = 180; 
+  let targetHeight = 180; 
+  let isPulled = true; 
   let stars = [];
   let shootingStar = null;
   let clouds = [];
-  let timeShown = 0; // Timer for auto-close
+  let timeShown = 0; 
   let autoCloseDelay = 3000; 
   
   p.setup = function () {
@@ -41,17 +41,17 @@ registerSketch('sk3', function (p) {
     let m = p.minute();
     let isNight = h < 6 || h >= 18; // Night time: 6pm to 6am
     
-    // Auto-close blind after 10 seconds
+    // Auto-close blind after 3 seconds
     if (!isPulled && p.millis() - timeShown > autoCloseDelay) {
       isPulled = true;
-      targetHeight = 200;
+      targetHeight = 180; 
     }
     
     // Draw window frame
     p.push();
     p.translate(p.width / 2, p.height / 2);
     
-    // Window background - changes based on time of day
+    // Window background
     p.noStroke();
     if (isNight) {
       // Night sky gradient
@@ -69,16 +69,8 @@ registerSketch('sk3', function (p) {
         p.fill(255, 255, 200, brightness);
         p.circle(star.x, star.y, star.size);
       }
-      
-      // Draw moon
-      p.fill(240, 240, 200);
-      p.circle(100, -60, 40);
-      // Moon craters
-      p.fill(220, 220, 180, 100);
-      p.circle(95, -65, 8);
-      p.circle(105, -55, 6);
-      
-      // Shooting star (random chance)
+
+      // Shooting star 
       if (p.random(1) < 0.01 && shootingStar === null) {
         shootingStar = {
           x: p.random(-150, 150),
@@ -177,19 +169,43 @@ registerSketch('sk3', function (p) {
       p.rect(-150, 90, 300, 20);
     }
     
-    // Digital time display when blind is open - NO BOX, JUST TEXT
-    if (blindHeight < 120) {
-      let timeY = 0; // Centered vertically in window
+    // Digital time display when blind is open
+    if (blindHeight < 100) {
+      let timeY = 0; 
       
-      // Display time in 24-hour format - NO BACKGROUND BOX
+      // Display time in 24-hour format with attractive styling
       p.noStroke();
+      
+      // Add subtle glow effect
       if (isNight) {
+        // Night glow
+        p.fill(255, 255, 255, 50);
+        p.textSize(52);
+        p.textAlign(p.CENTER, p.CENTER);
+        p.textFont('Georgia');
+        p.textStyle(p.BOLD);
+        let timeStr = p.nf(h, 2) + ':' + p.nf(m, 2);
+        p.text(timeStr, 0, timeY);
+        
+        // Main text
         p.fill(255, 255, 255); // White for night
       } else {
-        p.fill(80, 80, 80); // Light black/dark gray for day
+        // Day glow
+        p.fill(80, 80, 80, 50);
+        p.textSize(52);
+        p.textAlign(p.CENTER, p.CENTER);
+        p.textFont('Georgia');
+        p.textStyle(p.BOLD);
+        let timeStr = p.nf(h, 2) + ':' + p.nf(m, 2);
+        p.text(timeStr, 0, timeY);
+        
+        // Main text
+        p.fill(80, 80, 80); 
       }
-      p.textAlign(p.CENTER, p.CENTER);
+      
       p.textSize(48);
+      p.textAlign(p.CENTER, p.CENTER);
+      p.textFont('Georgia'); // Elegant serif font
       p.textStyle(p.BOLD);
       let timeStr = p.nf(h, 2) + ':' + p.nf(m, 2);
       p.text(timeStr, 0, timeY);
@@ -209,7 +225,7 @@ registerSketch('sk3', function (p) {
     // Animate blind with smooth transition
     blindHeight = p.lerp(blindHeight, targetHeight, 0.1);
     
-    // Draw blind slats (animated) - OPAQUE
+    // Draw blind slats (animated) - OPAQUE, but only up to blindHeight
     p.noStroke();
     for (let i = 0; i < blindHeight; i += 12) {
       // Main slat - solid and opaque
@@ -230,7 +246,7 @@ registerSketch('sk3', function (p) {
     p.strokeWeight(2);
     p.line(0, -100 + blindHeight, 0, -100 + blindHeight + 40);
     
-    // Pull string circle - highlight on hover
+    // Pull string circle
     let stringX = p.width / 2;
     let stringY = p.height / 2 - 100 + blindHeight + 40;
     let d = p.dist(p.mouseX, p.mouseY, stringX, stringY);
@@ -248,6 +264,7 @@ registerSketch('sk3', function (p) {
     p.textSize(14);
     p.textAlign(p.CENTER);
     p.textStyle(p.NORMAL);
+    p.textFont('Georgia'); // Match the time font
     p.text('Click to pull the blind', 0, 140);
     
     p.pop();
@@ -264,11 +281,11 @@ registerSketch('sk3', function (p) {
         // Open the blind
         isPulled = false;
         targetHeight = 0;
-        timeShown = p.millis(); // Start timer
+        timeShown = p.millis(); 
       } else {
         // Close the blind immediately if user clicks again
         isPulled = true;
-        targetHeight = 200;
+        targetHeight = 180; 
       }
     }
   };
