@@ -1,7 +1,7 @@
 // Instance-mode sketch for tab 3
 registerSketch('sk3', function (p) {
-  let blindHeight = 180;
-  let targetHeight = 180;
+  let blindHeight = 190;
+  let targetHeight = 190;
   let isPulled = true;
   let stars = [];
   let shootingStar = null;
@@ -33,7 +33,7 @@ registerSketch('sk3', function (p) {
     // Auto-close blind after 3 seconds
     if (!isPulled && p.millis() - timeShown > autoCloseDelay) {
       isPulled = true;
-      targetHeight = 180;
+      targetHeight = 190;
     }
 
     // Draw window frame
@@ -253,7 +253,7 @@ registerSketch('sk3', function (p) {
   };
 
   p.mousePressed = function () {
-    // Check if clicking near the pull string (screen coords)
+    // Check if clicking near the pull string 
     let stringX = p.width / 2;
     let stringY = p.height / 2 - 100 + blindHeight + 40;
     let d = p.dist(p.mouseX, p.mouseY, stringX, stringY);
@@ -267,7 +267,7 @@ registerSketch('sk3', function (p) {
       } else {
         // Close the blind immediately if user clicks again
         isPulled = true;
-        targetHeight = 180;
+        targetHeight = 190;
       }
     }
   };
