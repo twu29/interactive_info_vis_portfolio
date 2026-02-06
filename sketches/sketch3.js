@@ -1,11 +1,13 @@
 // Instance-mode sketch for tab 3
 registerSketch('sk3', function (p) {
-  let blindHeight = 0;
-  let targetHeight = 0;
-  let isPulled = false;
+  let blindHeight = 200; // Start with blind fully down
+  let targetHeight = 200; // Start closed
+  let isPulled = true; // Start in pulled state
   let stars = [];
   let shootingStar = null;
   let clouds = [];
+  let timeShown = 0; // Timer for auto-close
+  let autoCloseDelay = 3000; 
   
   p.setup = function () {
     p.createCanvas(p.windowWidth, p.windowHeight);
@@ -38,6 +40,12 @@ registerSketch('sk3', function (p) {
     let h = p.hour();
     let m = p.minute();
     let isNight = h < 6 || h >= 18; // Night time: 6pm to 6am
+    
+    // Auto-close blind after 10 seconds
+    if (!isPulled && p.millis() - timeShown > autoCloseDelay) {
+      isPulled = true;
+      targetHeight = 200;
+    }
     
     // Draw window frame
     p.push();
@@ -169,32 +177,22 @@ registerSketch('sk3', function (p) {
       p.rect(-150, 90, 300, 20);
     }
     
-    // Digital time display when blind is open
-    if (blindHeight > 80) {
-      let timeY = -20;
+    // Digital time display when blind is open - NO BOX, JUST TEXT
+    if (blindHeight < 120) {
+      let timeY = 0; // Centered vertically in window
       
-      // Time background box
-      p.fill(255, 255, 255, 200);
+      // Display time in 24-hour format - NO BACKGROUND BOX
       p.noStroke();
-      p.rect(-90, timeY - 25, 180, 50, 10);
-      
-      // Display time in 24-hour format
       if (isNight) {
-        p.fill(200, 200, 255); // Light blue for night
+        p.fill(255, 255, 255); // White for night
       } else {
-        p.fill(50, 50, 50); // Dark for day
+        p.fill(80, 80, 80); // Light black/dark gray for day
       }
       p.textAlign(p.CENTER, p.CENTER);
-      p.textSize(36);
-      p.textFont('monospace');
+      p.textSize(48);
       p.textStyle(p.BOLD);
       let timeStr = p.nf(h, 2) + ':' + p.nf(m, 2);
       p.text(timeStr, 0, timeY);
-      
-      // Small "24h" indicator
-      p.textSize(12);
-      p.textStyle(p.NORMAL);
-      p.text('24h', 0, timeY + 20);
     }
     
     // Window frame
@@ -211,12 +209,20 @@ registerSketch('sk3', function (p) {
     // Animate blind with smooth transition
     blindHeight = p.lerp(blindHeight, targetHeight, 0.1);
     
-    // Draw blind slats (animated)
-    p.stroke(100, 90, 80);
-    p.strokeWeight(1);
+    // Draw blind slats (animated) - OPAQUE
+    p.noStroke();
     for (let i = 0; i < blindHeight; i += 12) {
-      p.fill(180, 170, 160);
+      // Main slat - solid and opaque
+      p.fill(165, 155, 145);
       p.rect(-150, -100 + i, 300, 10);
+      
+      // Slat shadow/depth
+      p.fill(140, 130, 120);
+      p.rect(-150, -100 + i + 8, 300, 2);
+      
+      // Slat highlight
+      p.fill(190, 180, 170);
+      p.rect(-150, -100 + i, 300, 1);
     }
     
     // Draw pull string (moves with blind)
@@ -254,8 +260,16 @@ registerSketch('sk3', function (p) {
     let d = p.dist(p.mouseX, p.mouseY, stringX, stringY);
     
     if (d < 30) {
-      isPulled = !isPulled;
-      targetHeight = isPulled ? 180 : 0;
+      if (isPulled) {
+        // Open the blind
+        isPulled = false;
+        targetHeight = 0;
+        timeShown = p.millis(); // Start timer
+      } else {
+        // Close the blind immediately if user clicks again
+        isPulled = true;
+        targetHeight = 200;
+      }
     }
   };
   
