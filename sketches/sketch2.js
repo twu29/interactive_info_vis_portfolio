@@ -1,7 +1,15 @@
 // Instance-mode sketch for tab 2
 registerSketch('sk2', function (p) {
-  let hourWalkAngle = 0; // Continuous walking position for hour person
-  let minuteWalkAngle = 0; // Continuous walking position for minute person
+  let hourWalkAngle = 0; 
+  let minuteWalkAngle = 0; 
+  
+  // Falling state for each person
+  let hourFalling = false;
+  let minuteFalling = false;
+  let hourFallY = 0;
+  let minuteFallY = 0;
+  let hourFallRotation = 0;
+  let minuteFallRotation = 0;
   
   p.setup = function () {
     p.createCanvas(p.windowWidth, p.windowHeight);
@@ -58,24 +66,50 @@ registerSketch('sk2', function (p) {
     p.line(0, 0, 60, 0);
     p.pop();
     
+    // Falling animation
+    if (hourFalling) {
+      hourFallY += 8; // Fall speed
+      hourFallRotation += 0.15; // Spin while falling
+      if (hourFallY > p.height / 2 + 200) {
+        // Reset when off screen
+        hourFalling = false;
+        hourFallY = 0;
+        hourFallRotation = 0;
+      }
+    }
+    
+    if (minuteFalling) {
+      minuteFallY += 8;
+      minuteFallRotation += 0.15;
+      if (minuteFallY > p.height / 2 + 200) {
+        minuteFalling = false;
+        minuteFallY = 0;
+        minuteFallRotation = 0;
+      }
+    }
+    
     // Walking positions 
-    hourWalkAngle += 0.005; 
-    minuteWalkAngle += 0.015; 
+    if (!hourFalling) {
+      hourWalkAngle += 0.002; 
+    }
+    if (!minuteFalling) {
+      minuteWalkAngle += 0.010; 
+    }
     
     // Keep angles in range
     if (hourWalkAngle > p.TWO_PI) hourWalkAngle -= p.TWO_PI;
     if (minuteWalkAngle > p.TWO_PI) minuteWalkAngle -= p.TWO_PI;
     
-    // Draw walking minute person OUTSIDE the clock (with top hat)
-    drawWalkingPerson(p, minuteWalkAngle, 165, false, false, 'tophat');
+    // Draw walking minute person outside the clock 
+    drawWalkingPerson(p, minuteWalkAngle, 165, false, false, 'tophat', minuteFalling, minuteFallY, minuteFallRotation);
     
-    // Draw walking hour person INSIDE the clock (with baseball cap)
-    drawWalkingPerson(p, hourWalkAngle, 100, true, true, 'cap');
+    // Draw walking hour person inside the clock 
+    drawWalkingPerson(p, hourWalkAngle, 100, true, true, 'cap', hourFalling, hourFallY, hourFallRotation);
     
     p.pop();
   };
   
-  function drawWalkingPerson(p, angle, radius, isHour, isInside, hatType) {
+  function drawWalkingPerson(p, angle, radius, isHour, isInside, hatType, falling, fallY, fallRotation) {
     p.push();
     
     // Position on the clock edge
@@ -83,35 +117,39 @@ registerSketch('sk2', function (p) {
     let y = p.sin(angle) * radius;
     
     // Move to position
-    p.translate(x, y);
+    p.translate(x, y + fallY);
     
-    // Rotate so person faces forward along the circle (walking direction)
-    // If inside, flip the direction so they face the right way
-    if (isInside) {
-      p.rotate(angle - p.PI / 2); 
+    if (falling) {
+      // Spin while falling
+      p.rotate(fallRotation);
     } else {
-      p.rotate(angle + p.PI / 2); 
+      // Rotate so person faces forward along the circle
+      if (isInside) {
+        p.rotate(angle - p.PI / 2); 
+      } else {
+        p.rotate(angle + p.PI / 2); 
+      }
     }
     
     // Walking animation based on angle traveled
     let walkCycle = angle * 5; 
-    let step = p.sin(walkCycle) * 8; 
-    let armSwing = p.sin(walkCycle) * 6; 
-    let bounce = p.abs(p.sin(walkCycle * 2)) * 2; 
+    let step = falling ? 0 : p.sin(walkCycle) * 8; 
+    let armSwing = falling ? 10 : p.sin(walkCycle) * 6; // Arms flail when falling
+    let bounce = falling ? 0 : p.abs(p.sin(walkCycle * 2)) * 2; 
     
     // Draw the walking person
     p.stroke(0);
     p.strokeWeight(4);
     p.fill(0);
     
-    // Draw hat FIRST (behind head)
+    // Draw hat 
     if (hatType === 'tophat') {
       drawTopHat(p, 0, -20 - bounce);
     } else if (hatType === 'cap') {
       drawBaseballCap(p, 0, -20 - bounce);
     }
     
-    // Head (bounces slightly while walking)
+    // Head 
     p.fill(0);
     p.stroke(0);
     p.strokeWeight(4);
@@ -120,15 +158,20 @@ registerSketch('sk2', function (p) {
     // Body
     p.line(0, -11 - bounce, 0, 5 - bounce);
     
-    // Arms swinging (opposite to legs)
-    p.line(0, -8 - bounce, -8, 2 - bounce + armSwing);
-    p.line(0, -8 - bounce, 8, 2 - bounce - armSwing);
+    // Arms swinging 
+    if (falling) {
+      p.line(0, -8 - bounce, -12, -5 - bounce);
+      p.line(0, -8 - bounce, 12, -5 - bounce);
+    } else {
+      p.line(0, -8 - bounce, -8, 2 - bounce + armSwing);
+      p.line(0, -8 - bounce, 8, 2 - bounce - armSwing);
+    }
     
     // Legs walking
     p.line(0, 5 - bounce, -5, 20 + step); 
     p.line(0, 5 - bounce, 5, 20 - step); 
     
-    // Feet (little horizontal lines)
+    // Feet 
     p.line(-5, 20 + step, -8, 20 + step);
     p.line(5, 20 - step, 8, 20 - step);
     
@@ -144,7 +187,7 @@ registerSketch('sk2', function (p) {
     // Hat brim
     p.rect(x - 12, y - 10, 24, 3);
     
-    // Hat top (tall cylinder)
+    // Hat top 
     p.rect(x - 8, y - 26, 16, 16);
     
     // Hat top circle
@@ -166,6 +209,34 @@ registerSketch('sk2', function (p) {
     p.line(x - 10, y + 2, x - 18, y + 3);
     p.line(x - 18, y, x - 18, y + 3);
   }
+  
+  p.mousePressed = function () {
+    // Convert mouse position to clock-centered coordinates
+    let mx = p.mouseX - p.width / 2;
+    let my = p.mouseY - p.height / 2;
+    
+    // Check if clicked on minute person (outside)
+    let minuteX = p.cos(minuteWalkAngle) * 165;
+    let minuteY = p.sin(minuteWalkAngle) * 165;
+    let distToMinute = p.dist(mx, my, minuteX, minuteY);
+    
+    if (distToMinute < 30 && !minuteFalling) {
+      minuteFalling = true;
+      minuteFallY = 0;
+      minuteFallRotation = 0;
+    }
+    
+    // Check if clicked on hour person 
+    let hourX = p.cos(hourWalkAngle) * 100;
+    let hourY = p.sin(hourWalkAngle) * 100;
+    let distToHour = p.dist(mx, my, hourX, hourY);
+    
+    if (distToHour < 30 && !hourFalling) {
+      hourFalling = true;
+      hourFallY = 0;
+      hourFallRotation = 0;
+    }
+  };
   
   p.windowResized = function () { 
     p.resizeCanvas(p.windowWidth, p.windowHeight); 
