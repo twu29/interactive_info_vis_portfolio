@@ -41,24 +41,51 @@ registerSketch('sk2', function (p) {
     let hourAngle = p.map(h + m / 60, 0, 12, -p.PI / 2, 3 * p.PI / 2);
     let minuteAngle = p.map(m + s / 60, 0, 60, -p.PI / 2, 3 * p.PI / 2);
     
-    // Draw minute hand
-    p.push();
-    p.rotate(minuteAngle);
-    p.stroke(60);
-    p.strokeWeight(4);
-    p.line(0, 0, 80, 0);
-    p.pop();
+    // Draw minute person
+    drawPerson(p, minuteAngle, 110, false);
     
-    // Draw hour hand
-    p.push();
-    p.rotate(hourAngle);
-    p.stroke(60);
-    p.strokeWeight(6);
-    p.line(0, 0, 40, 0);
-    p.pop();
+    // Draw hour person
+    drawPerson(p, hourAngle, 75, true);
     
     p.pop();
   };
+  
+  function drawPerson(p, angle, length, isHour) {
+    p.push();
+    p.rotate(angle);
+    
+    // Position at end of hand
+    let x = length;
+    let y = 0;
+    
+    // Draw the person
+    p.stroke(30);
+    p.strokeWeight(2);
+    p.fill(255);
+    
+    // Head
+    p.circle(x, y, 16);
+    
+    // Body
+    p.line(x, y + 8, x, y + 25);
+    
+    // Arms - pose changes based on angle to show movement
+    let armOffset = p.sin(angle * 3) * 3;
+    p.line(x, y + 12, x - 8, y + 18 + armOffset);
+    p.line(x, y + 12, x + 8, y + 18 - armOffset);
+    
+    // Legs
+    let legOffset = p.sin(angle * 4) * 2;
+    p.line(x, y + 25, x - 5, y + 38 + legOffset);
+    p.line(x, y + 25, x + 5, y + 38 - legOffset);
+    
+    // Draw the clock hand line
+    p.stroke(60);
+    p.strokeWeight(isHour ? 6 : 4);
+    p.line(0, 0, x - 25, y);
+    
+    p.pop();
+  }
   
   p.windowResized = function () { 
     p.resizeCanvas(p.windowWidth, p.windowHeight); 
