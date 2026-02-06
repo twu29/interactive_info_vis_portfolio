@@ -93,7 +93,7 @@ registerSketch('sk2', function (p) {
       hourWalkAngle += 0.002; 
     }
     if (!minuteFalling) {
-      minuteWalkAngle += 0.010; 
+      minuteWalkAngle += 0.012; 
     }
     
     // Keep angles in range
