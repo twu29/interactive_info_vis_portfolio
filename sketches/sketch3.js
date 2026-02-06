@@ -225,10 +225,10 @@ registerSketch('sk3', function (p) {
     // Animate blind with smooth transition
     blindHeight = p.lerp(blindHeight, targetHeight, 0.1);
     
-    // Draw blind slats (animated) - OPAQUE, but only up to blindHeight
+    // Draw blind slats (animated) 
     p.noStroke();
     for (let i = 0; i < blindHeight; i += 12) {
-      // Main slat - solid and opaque
+      // Main slat 
       p.fill(165, 155, 145);
       p.rect(-150, -100 + i, 300, 10);
       
@@ -241,7 +241,7 @@ registerSketch('sk3', function (p) {
       p.rect(-150, -100 + i, 300, 1);
     }
     
-    // Draw pull string (moves with blind)
+    // Draw pull string 
     p.stroke(100, 90, 80);
     p.strokeWeight(2);
     p.line(0, -100 + blindHeight, 0, -100 + blindHeight + 40);
@@ -264,7 +264,7 @@ registerSketch('sk3', function (p) {
     p.textSize(14);
     p.textAlign(p.CENTER);
     p.textStyle(p.NORMAL);
-    p.textFont('Georgia'); // Match the time font
+    p.textFont('Georgia'); 
     p.text('Click to pull the blind', 0, 140);
     
     p.pop();
