@@ -12,7 +12,7 @@ registerSketch('sk2', function (p) {
   let minuteFallRotation = 0;
   
   p.setup = function () {
-    p.createCanvas(p.windowWidth, p.windowHeight);
+    p.createCanvas(800, 800);
   };
   
   p.draw = function () {

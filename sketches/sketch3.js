@@ -9,7 +9,7 @@ registerSketch('sk3', function (p) {
   let autoCloseDelay = 3000;
 
   p.setup = function () {
-    p.createCanvas(p.windowWidth, p.windowHeight);
+    p.createCanvas(800, 800);
 
     // Initialize stars for night sky
     for (let i = 0; i < 50; i++) {
