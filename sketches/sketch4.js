@@ -6,11 +6,17 @@ registerSketch('sk4', function (p) {
   let elapsedTimeBeforePause = 0;
   let totalGoalMinutes = 25;
   
+  // Visuals
+  let rotationAngle = 0;
+  const innerRadius = 130;
+  const outerRadius = 520;
+  
   // UI Elements
   let input, startBtn, pauseBtn, resetBtn;
 
   p.setup = function () {
     p.createCanvas(1100, 800);
+    p.angleMode(p.DEGREES);
     
     let uiX = 50;
     
@@ -46,12 +52,13 @@ registerSketch('sk4', function (p) {
     isRunning = false;
     isPaused = false;
     elapsedTimeBeforePause = 0;
+    rotationAngle = 0;
   }
 
   p.draw = function () {
     p.background(15);
 
-    // TIMER LOGIC (COUNT DOWN)
+    // TIMER LOGIC
     let totalElapsedMs = elapsedTimeBeforePause;
     if (isRunning) {
       totalElapsedMs += p.millis() - startTime;
@@ -73,5 +80,40 @@ registerSketch('sk4', function (p) {
     p.textSize(14);
     p.fill(180);
     p.text("GOAL MINUTES", 50, 165);
+
+    // DRAW RECORD PLAYER
+    p.push();
+    p.translate(650, 420);
+    
+    // Plinth
+    p.fill(30);
+    p.rect(-320, -320, 640, 640, 40);
+
+    // Rotation animation
+    if (isRunning) rotationAngle += 0.8;
+
+    p.push();
+    p.rotate(rotationAngle);
+    
+    // Black vinyl
+    p.fill(10);
+    p.stroke(40);
+    p.ellipse(0, 0, outerRadius);
+    
+    // Static grooves
+    p.noFill();
+    p.stroke(25);
+    for (let d = innerRadius; d < outerRadius; d += 12) {
+      p.ellipse(0, 0, d);
+    }
+    
+    p.pop();
+
+    // Center label
+    p.fill(255);
+    p.noStroke();
+    p.ellipse(0, 0, innerRadius);
+    
+    p.pop();
   };
 });
