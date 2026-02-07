@@ -9,8 +9,8 @@ registerSketch('sk4', function (p) {
   
   // Visuals 
   let rotationAngle = 0;
-  const innerRadius = 100; // Smaller center
-  const outerRadius = 420; // Smaller vinyl (Diameter)
+  const innerRadius = 100; 
+  const outerRadius = 420; 
   
   const colorPink = '#F8C8DC'; 
   const colorLightBG = '#F5F5F5'; 
