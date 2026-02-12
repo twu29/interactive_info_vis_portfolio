@@ -99,6 +99,14 @@ registerSketch('sk5', function (p) {
     p.textSize(22);
     p.textStyle(p.BOLD);
     p.text('Efficiency vs. Usage: What Drives Scoring in the 2024–2025 NBA Playoffs?', p.width / 2, 14);
+
+    // Source citation at very bottom center
+    p.fill(180);
+    p.noStroke();
+    p.textAlign(p.CENTER, p.BOTTOM);
+    p.textSize(11);
+    p.textStyle(p.NORMAL);
+    p.text('Source: Basketball-Reference.com (2025)', p.width / 2, p.height - 10);
   }
 
   function drawGrid() {
