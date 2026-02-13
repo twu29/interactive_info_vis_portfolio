@@ -98,7 +98,7 @@ registerSketch('sk5', function (p) {
     p.textAlign(p.CENTER, p.TOP);
     p.textSize(22);
     p.textStyle(p.BOLD);
-    p.text('Efficiency vs. Usage: What Drives Scoring in the 2024–2025 NBA Playoffs?', p.width / 2, 14);
+    p.text('Shoot More and Shoot Smarter: What Drives 2024–2025 NBA Playoff Scoring?', p.width / 2, 14);
 
     // Source citation at very bottom center
     p.fill(180);
@@ -163,17 +163,17 @@ registerSketch('sk5', function (p) {
 
     // X-axis labels
     p.textAlign(p.LEFT, p.CENTER);
-    p.text('HIGH USAGE', chartRight + 8, centerY);
+    p.text('Shoot More', chartRight + 8, centerY);
 
     p.textAlign(p.RIGHT, p.CENTER);
-    p.text('LOW USAGE', chartLeft - 8, centerY);
+    p.text('Shoot Less', chartLeft - 8, centerY);
 
     // Y-axis labels
     p.textAlign(p.CENTER, p.BOTTOM);
-    p.text('EFFICIENT', centerX, chartTop - 8);
+    p.text('High Scoring Efficiency', centerX, chartTop - 8);
 
     p.textAlign(p.CENTER, p.TOP);
-    p.text('INEFFICIENT', centerX, chartBottom + 8);
+    p.text('Low Scoring Efficiency', centerX, chartBottom + 8);
   }
 
   function drawPlayers() {
